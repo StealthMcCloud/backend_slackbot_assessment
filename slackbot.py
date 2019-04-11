@@ -40,9 +40,24 @@ bot_commands = {
     'help': 'Inform user to use help_list to see list of commands',
     'ping': 'shows uptime of bot',
     'exit': 'terminates current running bot program',
-    'raise_message': 'Raises an exception',
-    'get_quote': 'Displays a random breaking bad quote'
+    'raise': 'Raises an exception',
+    'get quote': 'Displays a random breaking bad quote'
 }
+
+def formatted_dict(d, k_header='Keys', v_header='Values'):
+    """Renders contents of a dict into a preformatted string"""
+    if d:
+        lines = []
+        # find the longest key entry in d or the key header string
+        width = max(map(len, d))
+        width = max(width, len(k_header))
+        lines.extend(['{k:<{w}} : {v}'.format(k=k_header, v=v_header, w=width)])
+        lines.extend(['-'*width + '   ' + '-'*len(v_header)])
+        lines.extend('{k:<{w}} : {v}'.format(k=k, v=v, w=width) for k, v in d.items())
+        return '\n'.join(lines)
+    return "<empty>"
+
+help_text = formatted_dict(bot_commands, k_header="My cmds", v_header='What they do')
 
 def config_logger():
     """Setup logging configuration"""
@@ -69,9 +84,9 @@ def command_loop(bot):
             bot.__exit__(channel)
         elif command == "ping":
             bot.ping(channel)
-        elif command == "raise_message":
-            bot.raise_message(channel)
-        elif command == "get_quote":
+        elif command == "raise":
+            bot.raise_(channel)
+        elif command == "get quote":
             bot.get_bb_quote(channel)
         else:
             message = "Invalid command.  Please use 'help' to see available commands"
@@ -80,8 +95,6 @@ def command_loop(bot):
             channel=BOT_CHAN,
             text=message
         )
-
-
 
 def signal_handler(sig_num, frame):
     global logger
@@ -114,8 +127,7 @@ class SlackBot:
         pass
 
     def help(self, channel):
-        message = bot_commands
-        self.post_message(message, channel)
+        self.post_message("```" + help_text + "```", channel)
 
     def get_bb_quote(self, channel):
         URL = 'https://breaking-bad-quotes.herokuapp.com/v1/quotes'
@@ -123,9 +135,11 @@ class SlackBot:
         message = r[0]['quote']
         self.post_message(message, channel)
 
-    def raise_message(self, channel):
+    def raise_(self, channel):
         message = "Oh you are giving me a raise?"
         self.post_message(message, channel)
+        time.sleep(2)
+        raise Exception("I am a unhandled disgruntled exception")
 
     def ping(self, channel):
         stime = time.strftime(
