@@ -42,6 +42,7 @@ bot_commands = {
     'exit': 'terminates current running bot program',
     'help_list': 'Displays list of available commands.',
     'raise_message': 'Raises an exception'
+    'get_quote': 'Displays a random breaking bad quote'
 }
 
 def config_logger():
