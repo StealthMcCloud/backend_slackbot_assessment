@@ -17,7 +17,6 @@ import re
 import requests
 import logging
 import signal
-import weather
 from slackclient import SlackClient
 from dotenv import load_dotenv
 
