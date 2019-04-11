@@ -17,6 +17,7 @@ import re
 import requests
 import logging
 import signal
+import weather
 from slackclient import SlackClient
 from dotenv import load_dotenv
 
@@ -28,9 +29,6 @@ welcome_message = "Varys is online and awaiting instructions!"
 # On location of... his testicles!
 slack_client = SlackClient(os.environ.get('SLACK_BOT_TOKEN'))
 BOT_USER_TOKEN = os.environ.get("SLACK_BOT_TOKEN")
-r = requests.get("https://anapioficeandfire.com/api/characters/583")
-# instantiate Slack client
-# starterbot's user ID in Slack: value is assigned after the bot starts up
 exit_flag = False
 
 # constants
@@ -45,7 +43,7 @@ bot_commands = {
     'help_list': 'Displays list of available commands.',
     'raise_message': 'Raises an exception'
 }
-    
+
 def config_logger():
     """Setup logging configuration"""
     global logger
@@ -73,6 +71,8 @@ def command_loop(bot):
             bot.ping(channel)
         elif command == "raise_message":
             bot.raise_message(channel)
+        elif command == "get_quote":
+            bot.get_bb_quote(channel)
         else:
             message = "Invalid command.  Please use 'help' to see available commands"
             slack_client.api_call(
@@ -115,6 +115,12 @@ class SlackBot:
 
     def help(self, channel):
         message = bot_commands
+        self.post_message(message, channel)
+
+    def get_bb_quote(self, channel):
+        URL = 'https://breaking-bad-quotes.herokuapp.com/v1/quotes'
+        r = requests.get(URL).json()
+        message = r[0]['quote']
         self.post_message(message, channel)
 
     def raise_message(self, channel):
