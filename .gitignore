@@ -2,5 +2,3 @@
 venv/
 .vscode/
 *.log
-Procfile
-runtime.txt
