@@ -40,8 +40,7 @@ bot_commands = {
     'help': 'Inform user to use help_list to see list of commands',
     'ping': 'shows uptime of bot',
     'exit': 'terminates current running bot program',
-    'help_list': 'Displays list of available commands.',
-    'raise_message': 'Raises an exception'
+    'raise_message': 'Raises an exception',
     'get_quote': 'Displays a random breaking bad quote'
 }
 
