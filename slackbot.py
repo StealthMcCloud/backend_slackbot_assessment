@@ -24,7 +24,7 @@ load_dotenv()
 
 BOT_NAME = 'Wally'
 BOT_CHAN = '#general'
-welcome_message = "Varys is online and awaiting instructions!"
+welcome_message = "Wally is online and awaiting instructions!"
 # On location of... his testicles!
 slack_client = SlackClient(os.environ.get('SLACK_BOT_TOKEN'))
 BOT_USER_TOKEN = os.environ.get("SLACK_BOT_TOKEN")
