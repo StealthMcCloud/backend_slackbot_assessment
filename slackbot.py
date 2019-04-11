@@ -23,7 +23,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-BOT_NAME = 'varys-my-dragon'
+BOT_NAME = 'Wally'
 BOT_CHAN = '#general'
 welcome_message = "Varys is online and awaiting instructions!"
 # On location of... his testicles!
@@ -139,7 +139,7 @@ class SlackBot:
         message = "Oh you are giving me a raise?"
         self.post_message(message, channel)
         time.sleep(2)
-        raise Exception("I am a unhandled disgruntled exception")
+        raise Exception("I am an unhandled disgruntled exception")
 
     def ping(self, channel):
         stime = time.strftime(
@@ -184,7 +184,10 @@ def main():
     bot = SlackBot(BOT_USER_TOKEN)
     bot.post_message(f"{bot.name} ready for your command.", BOT_CHAN)
     while exit_flag is False:
-        command_loop(bot)
+        try:
+            command_loop(bot)
+        except Exception as e:
+            logger.error(str(e))
         time.sleep(RTM_READ_DELAY)
     else:
         print("Connection failed. Exception traceback printed above.")
