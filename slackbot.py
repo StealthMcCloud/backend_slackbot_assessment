@@ -5,8 +5,6 @@ A slackbot that responds to commands.
 This uses the Slack RTM (Real Time Messaging) API.
 Required environment variables (example only, these are not real tokens).
 Get these from the Slack account settings that you are connecting to.
-   BOT_USER_ID = 'U20981S736'
-   BOT_USER_TOKEN = 'xoxb-106076235608-AbacukynpGahsicJqugKZC'
 """
 
 __author__ = 'Clinton Johnson & Jen Browning'
