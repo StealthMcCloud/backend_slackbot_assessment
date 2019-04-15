@@ -25,13 +25,12 @@ load_dotenv()
 BOT_NAME = 'Wally'
 BOT_CHAN = '#general'
 welcome_message = "Wally is online and awaiting instructions!"
-# On location of... his testicles!
 slack_client = SlackClient(os.environ.get('SLACK_BOT_TOKEN'))
 BOT_USER_TOKEN = os.environ.get("SLACK_BOT_TOKEN")
 exit_flag = False
 
 # constants
-RTM_READ_DELAY = 1 # 1 second delay between reading from RTM
+RTM_READ_DELAY = 1  # 1 second delay between reading from RTM
 MENTION_REGEX = "^<@(|[WU].+?)>(.*)"
 logger = logging.getLogger(__name__)
 
@@ -43,6 +42,7 @@ bot_commands = {
     'get quote': 'Displays a random breaking bad quote'
 }
 
+
 def formatted_dict(d, k_header='Keys', v_header='Values'):
     """Renders contents of a dict into a preformatted string"""
     if d:
@@ -50,13 +50,18 @@ def formatted_dict(d, k_header='Keys', v_header='Values'):
         # find the longest key entry in d or the key header string
         width = max(map(len, d))
         width = max(width, len(k_header))
-        lines.extend(['{k:<{w}} : {v}'.format(k=k_header, v=v_header, w=width)])
+        lines.extend(
+            ['{k:<{w}} : {v}'.format(k=k_header, v=v_header, w=width)])
         lines.extend(['-'*width + '   ' + '-'*len(v_header)])
-        lines.extend('{k:<{w}} : {v}'.format(k=k, v=v, w=width) for k, v in d.items())
+        lines.extend(
+            '{k:<{w}} : {v}'.format(k=k, v=v, w=width) for k, v in d.items())
         return '\n'.join(lines)
     return "<empty>"
 
-help_text = formatted_dict(bot_commands, k_header="My cmds", v_header='What they do')
+
+help_text = formatted_dict(
+    bot_commands, k_header="My cmds", v_header='What they do')
+
 
 def config_logger():
     """Setup logging configuration"""
@@ -73,6 +78,7 @@ def config_logger():
     logger.addHandler(file_handler)
     logger.addHandler(stream_handler)
 
+
 def command_loop(bot):
     """Process incoming bot commands"""
     command, channel = bot.parse_bot_commands(bot.slack_client.rtm_read())
@@ -88,12 +94,11 @@ def command_loop(bot):
         elif command == "get quote":
             bot.get_bb_quote(channel)
         else:
-            message = "Invalid command.  Please use 'help' to see available commands"
+            message = '''Invalid command.
+            Please use 'help' to see available commands'''
             slack_client.api_call(
-            "chat.postMessage",
-            channel=BOT_CHAN,
-            text=message
-        )
+                "chat.postMessage", channel=BOT_CHAN, text=message)
+
 
 def signal_handler(sig_num, frame):
     global logger
@@ -121,26 +126,26 @@ class SlackBot:
     def __str__(self):
         pass
 
-    def __enter__(self):
-        """Implement this method to make this a context manager"""
-        pass
-
     def help(self, channel):
+        '''This displays all the commands that the bot recognizes'''
         self.post_message("```" + help_text + "```", channel)
 
     def get_bb_quote(self, channel):
+        '''This pulls a random Breaking Bad quote from the below API'''
         URL = 'https://breaking-bad-quotes.herokuapp.com/v1/quotes'
         r = requests.get(URL).json()
         message = r[0]['quote']
         self.post_message(message, channel)
 
     def raise_(self, channel):
+        '''This raises an exception error'''
         message = "Oh you are giving me a raise?"
         self.post_message(message, channel)
         time.sleep(2)
         raise Exception("I am an unhandled disgruntled exception")
 
     def ping(self, channel):
+        '''This command displays the uptime that the bot has been running'''
         stime = time.strftime(
             '%Y-%m-%d %H:%M:%S', time.localtime(self.start_time)
             )
@@ -148,7 +153,9 @@ class SlackBot:
         self.post_message(message, channel)
 
     def __exit__(self, channel):
-        self.post_message(f'{self.name} is heading to the tavern to grab a drink.', channel)
+        '''This is the exit command that terminates the bot'''
+        self.post_message(
+            f'{self.name} is heading to the tavern to grab a drink.', channel)
         global exit_flag
         exit_flag = True
 
@@ -190,6 +197,7 @@ def main():
         time.sleep(RTM_READ_DELAY)
     else:
         print("Connection failed. Exception traceback printed above.")
+
 
 if __name__ == "__main__":
     main()
